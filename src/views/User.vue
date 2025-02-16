@@ -1,0 +1,172 @@
+<template>
+  <div class="manage">
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
+      <!-- 放表单信息 -->
+      <el-form ref="form" :model="form" label-width="80px" :inline="true" :rules="rules">
+        <el-form-item label="姓名" prop="name">
+          <el-input placeholder="请输入姓名" v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="年龄" prop="age">
+          <el-input placeholder="请输入年龄" v-model="form.age"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-select v-model="form.sex" placeholder="请选择性别">
+            <el-option label="男" :value="1"></el-option>
+            <el-option label="女" :value="0"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="出生日期" prop="birth">
+          <el-date-picker v-model="form.birth" type="date" placeholder="选择日期"
+            value-format="yyyy-MM-DD">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="地址" prop="addr">
+          <el-input placeholder="请输入地址" v-model="form.addr"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancle">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
+      </span>
+    </el-dialog>
+    <div class="manage-header">
+      <el-button @click="handleAdd" type="primary" size="small">
+        +新增
+      </el-button>
+      <!-- 搜索区域 -->
+      <el-form :model="userform" :inline="true" size="small">
+        <el-form-item>
+          <el-input placeholder="请输入姓名" v-model="userform.name"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="onSubmit" type="primary" size="small">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="common-table">
+      <el-table height="90%" :data="tableData" style="width: 100%">
+        <el-table-column prop="name" label="姓名">
+        </el-table-column>
+        <el-table-column prop="age" label="年龄">
+        </el-table-column>
+        <el-table-column prop="sex" label="性别">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.sex === 1 ? '男' : '女'  }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="birth" label="出生日期">
+        </el-table-column>
+        <el-table-column prop="addr" label="地址">
+        </el-table-column>
+        <el-table-column prop="" label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEidt(scope.row)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="pager">
+        <el-pagination layout="prev, pager, next" :total="total" @current-change="handlePage">
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+// import { getUser, addUser, editUser, delUser } from "@/api";
+export default {
+  data() {
+    return {
+      property: "value",
+      dialogVisible: false,
+      form: {
+        name: "",
+        age: "",
+        sex: "",
+        birth: "",
+        addr: "",
+      },
+      userform: {
+        name: "",
+      },
+      rules: {
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        age: [{ required: true, message: "请输入年龄", trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别" }],
+        birth: [{ required: true, message: "请选择出生日期", trigger: "blur" }],
+        addr: [{ required: true, message: "请输入地址", trigger: "blur" }],
+      },
+      tableData: [],
+      modalType: 0, //0表示新增，1表示编辑,
+      total: 0, //当前tableData的总条数
+      pageData: {
+        page: 1,
+        limit: 10,
+      },
+    };
+  },
+  methods: {
+    //弹窗的确认事件
+    submit() {
+    },
+    handleClose() {
+      //弹窗关闭时，获取form数据
+      this.$refs.form.resetFields();
+      this.dialogVisible = false;
+    },
+    cancle() {
+      this.handleClose();
+    },
+    //编辑
+    handleEidt(row) {
+      this.modalType = 1;
+      this.dialogVisible = true;
+      this.form = JSON.parse(JSON.stringify(row));
+    },
+    //删除
+    handleDelete(row) {
+    },
+    handleAdd() {
+      this.modalType = 0;
+      this.dialogVisible = true;
+    },
+    //获取列表数据方法的封装
+    getList() {
+    },
+    //页面切换
+    handlePage(val) {
+      this.pageData.page = val;
+      this.getList();
+    },
+    //列表搜索
+    onSubmit() {
+      this.getList();
+    },
+  },
+  //获取列表数据
+  mounted() {
+    this.getList();
+  },
+};
+</script> 
+<style lang="less" scoped>
+.manage {
+  height: 90%;
+  .manage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .common-table {
+    position: relative;
+    // height: 90%;
+    height: calc(100% - 62px);
+    .pager {
+      position: absolute;
+      bottom: 0;
+      right: 20px;
+    }
+  }
+}
+</style>
