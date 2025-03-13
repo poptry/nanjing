@@ -1,15 +1,12 @@
 <template>
   <div class="header-container">
     <div class="l-content">
-      <el-button style="margin-right: 20px;" @click="handleMenu" icon="el-icon-menu"
-        size="mini"></el-button>
       <!-- 面包屑 -->
       <el-breadcrumb separator="/">
         <el-breadcrumb-item v-for="item in tags" :key="item.path" :to="{ path: item.path }">
           {{ item.label }}
         </el-breadcrumb-item>
       </el-breadcrumb>
-
     </div>
     <div class="r-content">
       <el-dropdown @command="handleClick">
@@ -34,9 +31,6 @@ export default {
     };
   },
   methods: {
-    handleMenu() {
-      this.$store.commit("collaspseMenu");
-    },
     //退出业务
     handleClick(command) {
       if (command === "cancle") {
@@ -57,7 +51,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .header-container {
-  padding: 0 20px;
+  // padding: 0 20px;
   background-color: #333;
   height: 60px;
   display: flex;
@@ -81,7 +75,7 @@ export default {
   .l-content {
     display: flex;
     align-items: center;
-
+    margin-left: 20px;
     ::v-deep .el-breadcrumb__item {
       .el-breadcrumb__inner {
         font-weight: normal;

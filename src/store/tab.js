@@ -27,6 +27,13 @@ export default {
         url: "User.vue",
       },
       {
+        path: "/category",
+        name: "category",
+        label: "分类管理",
+        icon: "document-copy",
+        url: "Category.vue",
+      },
+      {
         path: "/scenic",
         name: "scenic",
         label: "景点管理",

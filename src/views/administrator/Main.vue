@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <el-container>
       <el-aside width="auto">
         <common-aside />
@@ -18,9 +18,9 @@
   </div>
 </template>
 <script>
-import CommonAside from "../components/CommonAside.vue";
-import CommonHeader from "../components/CommonHeader.vue";
-import CommonTag from "../components/CommonTag.vue";
+import CommonAside from "../../components/CommonAside.vue";
+import CommonHeader from "../../components/CommonHeader.vue";
+import CommonTag from "../../components/CommonTag.vue";
 
 export default {
   data() {
@@ -34,7 +34,16 @@ export default {
 };
 </script>
 <style scoped>
+.main {
+  height: 100vh;
+}
 .el-header {
   padding: 0;
+}
+.el-container {
+  height: 100%;
+}
+.el-main {
+  height: 100%;
 }
 </style>
