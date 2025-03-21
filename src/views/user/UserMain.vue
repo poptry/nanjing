@@ -17,7 +17,7 @@
               <img src="@/assets/images/hd-pf.jpg" alt="" class="user">
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人中心</el-dropdown-item>
+              <el-dropdown-item command="personal">个人中心</el-dropdown-item>
               <el-dropdown-item command="cancle">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -49,6 +49,8 @@ export default {
         Cookie.remove("token");
         //跳转到登录页面
         this.$router.push("/login");
+      } else if (command == "personal") {
+        this.$router.push("/personalInfo");
       }
     },
     toReservation() {

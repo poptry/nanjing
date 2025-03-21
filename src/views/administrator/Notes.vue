@@ -87,8 +87,17 @@
 
         <!-- 留言内容 -->
         <el-table-column prop="content" label="留言内容" width="250">
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <div class="ellipsis" :title="scope.row.content">{{ scope.row.content }}</div>
+          </template> -->
+          <template slot-scope="scope">
+            <el-tooltip effect="light" placement="top" :content="scope.row.content"
+              popper-class="custom-tooltip">
+              <div class="ellipsis">
+                {{ scope.row.content }}
+              </div>
+            </el-tooltip>
+            <!-- 设置描述文本 -->
           </template>
         </el-table-column>
 

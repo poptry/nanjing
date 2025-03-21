@@ -24,6 +24,7 @@ export default {
 .card {
   width: 90%/10;
   margin: 0 10%/2/10;
+  margin-bottom: 5px;
   height: 40px;
   line-height: 40px;
   text-align: center;

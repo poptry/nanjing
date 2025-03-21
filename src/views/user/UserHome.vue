@@ -10,6 +10,9 @@
         <span style="font-size: 20px;font-weight: 600;">景点分类</span>
       </div>
       <div class="cate-card">
+        <CategoryCard :class="firstId == 0 ? 'whichCategory' : ``" :categoryData="all"
+          @clickCategory="clickCategory">
+        </CategoryCard>
         <CategoryCard v-for="item in categoryList" :key="item.categoryId" :categoryData="item"
           :class="item.categoryId==firstId ? 'whichCategory' : ``" @clickCategory="clickCategory">
         </CategoryCard>
@@ -21,6 +24,11 @@
         <CommonCard v-for="item in scenicList" :key="item.attractionId" :scenicData="item"
           @scenicClick="clickScenic">
         </CommonCard>
+        <div class="pager">
+          <el-pagination @size-change="handleSizeChange" layout="sizes,prev, pager, next"
+            :total="total" :page-sizes="[10, 20, 30, 40]"
+            @current-change="handlePage"></el-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -42,10 +50,14 @@ export default {
   },
   data() {
     return {
+      all: {
+        categoryName: `全部`,
+      },
       recommendList: [],
       categoryList: [],
       scenicList: [],
       firstId: 0,
+      total: 0,
       page: {
         pageNum: 1,
         pageSize: 10,
@@ -53,10 +65,26 @@ export default {
     };
   },
   methods: {
-    clickCategory(category) {
-      this.firstId = category.categoryId;
+    // 显示个数切换
+    handleSizeChange(val) {
+      this.page.pageSize = val;
       this.getScenicList();
     },
+    //页面切换
+    handlePage(val) {
+      this.page.pageNum = val;
+      this.getScenicList();
+    },
+    // 点击分类
+    clickCategory(category) {
+      this.page = {
+        pageNum: 1,
+        pageSize: 10,
+      };
+      this.firstId = category.categoryId ? category.categoryId : 0;
+      this.getScenicList();
+    },
+    // 点击景点
     clickScenic(scenicData) {
       this.$router.push({
         name: "attraction",
@@ -65,9 +93,17 @@ export default {
     },
     // 获取景点
     async getScenicList() {
+      if (this.firstId == 0) {
+        await getAttractionList(this.page).then(({ data }) => {
+          this.total = data.total;
+          this.scenicList = data.data;
+        });
+        return;
+      }
       await getAttractionList({ categoryId: this.firstId, ...this.page }).then(
         ({ data }) => {
           console.log(data.data);
+          this.total = data.total;
           this.scenicList = data.data;
         }
       );
@@ -78,10 +114,10 @@ export default {
     await getCategoryList(this.page).then(({ data }) => {
       this.categoryList = data.data;
     });
-    this.firstId = this.categoryList[0].categoryId;
-    if (this.firstId) {
-      this.getScenicList();
-    }
+    // this.firstId = this.categoryList[0].categoryId;
+    // if (this.firstId) {
+    this.getScenicList();
+    // }
   },
 };
 </script>
@@ -98,15 +134,25 @@ export default {
     flex-direction: row;
     justify-content: flex-start;
     margin-bottom: 40px;
+    // 换行
+    flex-wrap: wrap;
   }
   .scenicCard {
+    padding-bottom: 50px;
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    // 换行
+    flex-wrap: wrap;
+    .pager {
+      position: absolute;
+      bottom: 0;
+      right: 20px;
+    }
   }
 }
-
 .whichCategory {
   background-color: rgb(42, 42, 42);
   color: #fff;
@@ -118,8 +164,9 @@ export default {
   }
   .search {
     position: relative;
-    width: 1140px;
-    margin: 80px auto;
+    width: 100%;
+    margin: auto;
+    margin-bottom: 40px;
     height: 300px;
     padding: 20px;
     background: url("@/assets/images/bgImg.jpg") no-repeat center/cover;

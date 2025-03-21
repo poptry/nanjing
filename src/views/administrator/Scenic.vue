@@ -125,10 +125,13 @@
         <!-- 景点描述 -->
         <el-table-column prop="description" label="景点描述" width="250">
           <template slot-scope="scope">
+            <el-tooltip effect="light" placement="top" :content="scope.row.description"
+              popper-class="custom-tooltip" :disabled="scope.row.description.length <= 13">
+              <div class="ellipsis">
+                {{ scope.row.description }}
+              </div>
+            </el-tooltip>
             <!-- 设置描述文本 -->
-            <div class="ellipsis" :title="scope.row.description">
-              {{ scope.row.description }}
-            </div>
           </template>
         </el-table-column>
 
@@ -177,9 +180,10 @@
         </el-table-column>
 
         <!-- 操作列 -->
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="210">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button type="warning" size="mini" @click="handleRemove(scope.row)">下架</el-button>
             <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -198,6 +202,7 @@ import {
   addAttraction,
   deleteAttraction,
   updateAttraction,
+  removeAttraction,
 } from "@/api";
 export default {
   data() {
@@ -267,6 +272,29 @@ export default {
     },
   },
   methods: {
+    // 下架
+    handleRemove(row) {
+      this.$confirm("是否删除该景点", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          removeAttraction({ attractionId: row.attractionId }).then(
+            ({ data }) => {
+              if (data.code == 200) {
+                this.$message.success("下架成功");
+                this.getList();
+              } else {
+                this.$message.error(data.msg);
+              }
+            }
+          );
+        })
+        .catch(() => {
+          return;
+        });
+    },
     // 设置父事件,接收弹窗上传的图片路径
     getImgURL(url) {
       this.form.image = url;
@@ -280,8 +308,6 @@ export default {
     getList() {
       getAttractionList({ categoryId: this.categorySelect, ...this.page }).then(
         ({ data }) => {
-          console.log(data);
-
           if (data.code == 200) {
             this.tableData = data.data;
             this.total = data.total;

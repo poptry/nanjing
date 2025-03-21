@@ -2,9 +2,7 @@
   <div class="scenicDialog">
     <div class="top-part">
       <div class="img">
-        <el-image style="width: 200px; height: 200px"
-          :src="`https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg`"
-          fit="fill"></el-image>
+        <el-image style="width: 200px; height: 200px" :src="newData.image" fit="fill"></el-image>
       </div>
       <div class="description">
         <el-descriptions title="景点介绍" :column="1">
@@ -195,6 +193,11 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-direction: row;
+  .img {
+    padding: 5px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(57, 56, 56, 0.3) 0px 7px 13px -3px;
+  }
   .description {
     margin-left: 20px;
   }

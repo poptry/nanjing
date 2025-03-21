@@ -1,8 +1,8 @@
 <template>
   <div class="card-container" @click="handlerClick">
     <div class="card">
-      <img src="https://n.sinaimg.cn/sinacn20115/67/w1000h667/20190129/98dd-hshmsth8273435.jpg"
-        alt="">
+      <img :src="scenicData.image" style=" object-fit: cover; width: 100%; height: 100%;"
+        alt="未加载" />
     </div>
     <div style="margin-top: 10px;">
       <span style="font-size: 20px;font-weight: 500;">{{ scenicData.name }}</span>
@@ -30,7 +30,8 @@ export default {
 <style lang="less" scoped>
 .card-container {
   width: 90%/5;
-  margin: 0 10%/4/2;
+  margin: 0 10%/5/2;
+  margin-bottom: 40px;
   cursor: pointer;
 }
 .card {

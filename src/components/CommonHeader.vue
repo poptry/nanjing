@@ -14,7 +14,7 @@
           <img src="../assets/images/hd-pf.jpg" alt="" class="user">
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人中心</el-dropdown-item>
+          <el-dropdown-item command="personal">个人中心</el-dropdown-item>
           <el-dropdown-item command="cancle">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -39,6 +39,8 @@ export default {
         Cookie.remove("menu");
         //跳转到登录页面
         this.$router.push("/login");
+      } else if (command === "personal") {
+        this.$router.push("/personal");
       }
     },
   },
@@ -57,7 +59,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  padding-right: 20px;
   .text {
     color: #fff;
     font-size: 14px;

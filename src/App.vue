@@ -10,6 +10,13 @@ export default {
 };
 </script>
 <style lang="less">
+.el-tooltip__popper {
+  max-width: 60% !important; //宽度可根据自己需要进行设置
+  max-height: 150px !important; //高度可根据自己需要进行设置
+  overflow: hidden !important;
+  // 滚动条
+  overflow-y: auto !important;
+}
 html,
 body {
   height: 100%;

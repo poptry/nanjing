@@ -95,6 +95,10 @@ export const addAttraction = (data) => {
 export const deleteAttraction = (data) => {
   return http.post("/attraction/delete", data);
 };
+// 下架景区
+export const removeAttraction = (data) => {
+  return http.post("/attraction/remove", data);
+};
 // 修改景区
 export const updateAttraction = (data) => {
   return http.post("/attraction/update", data);

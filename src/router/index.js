@@ -54,6 +54,12 @@ const routes = [
         meta: { requiresAuth: true, role: "admin" },
         component: () => import("@/views/administrator/Notes.vue"), //懒加载
       },
+      {
+        path: "/personal",
+        name: "personal",
+        meta: { requiresAuth: true, role: "admin" },
+        component: () => import("@/views/PersonalInfo.vue"),
+      },
     ],
   },
   // 用户路由
@@ -81,8 +87,15 @@ const routes = [
         meta: { requiresAuth: true, role: "user" },
         component: () => import("@/views/user/Attraction.vue"),
       },
+      {
+        path: "/personalInfo",
+        name: "personalInfo",
+        meta: { requiresAuth: true, role: "user" },
+        component: () => import("@/views/PersonalInfo.vue"),
+      },
     ],
   },
+
   //登录路由
   {
     path: "/login",

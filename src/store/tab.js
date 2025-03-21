@@ -54,6 +54,13 @@ export default {
         icon: "message",
         url: "Notes.vue",
       },
+      {
+        path: "/personal",
+        name: "personal",
+        label: "个人中心",
+        icon: "setting",
+        url: "PersonalInfo.vue",
+      },
     ],
   },
   mutations: {

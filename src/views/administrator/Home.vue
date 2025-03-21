@@ -29,6 +29,14 @@
             <el-table-column label="景点" prop="attractionName">
             </el-table-column>
             <el-table-column label="评论内容" prop="content">
+              <template slot-scope="scope">
+                <el-tooltip effect="light" placement="top" :content="scope.row.content"
+                  popper-class="custom-tooltip" :disabled="scope.row.content.length <= 13">
+                  <div class="ellipsis">
+                    {{ scope.row.content }}
+                  </div>
+                </el-tooltip>
+              </template>
             </el-table-column>
             <el-table-column label="评分" prop="rating">
             </el-table-column>
@@ -142,10 +150,10 @@ export default {
         this.data[3].num = data.data.map.comment;
       });
       await getReservationCount().then(({ data }) => {
-        this.data[1].num = data.data.map.reservation;
+        this.data[2].num = data.data.map.reservation;
       });
       await getAttractionCount().then(({ data }) => {
-        this.data[2].num = data.data.map.attraction;
+        this.data[1].num = data.data.map.attraction;
       });
     },
     // 获取最新评论
@@ -186,6 +194,13 @@ export default {
   }
   .newestComm {
     width: 48%;
+    /* 设置文字省略 */
+    .ellipsis {
+      white-space: nowrap; /* 禁止换行 */
+      overflow: hidden; /* 超出部分隐藏 */
+      text-overflow: ellipsis; /* 使用省略号代替超出部分 */
+      width: 100%; /* 设置宽度 */
+    }
   }
 }
 .top {
