@@ -18,6 +18,9 @@
                 @click="toggleExpand">展开</span>
             </div>
           </el-descriptions-item>
+          <el-descriptions-item label="开放时间">
+            {{ newData.openTime ? newData.openTime : '--' }}
+          </el-descriptions-item>
           <el-descriptions-item label="开放状态">
             <el-tag size="small"
               :type="newData.status == 0 ? 'danger' :''">{{ newData.status == 0 ? '关闭' : "开启" }}</el-tag>
@@ -181,19 +184,18 @@ export default {
   },
   created() {
     this.newData = JSON.parse(this.$route.params.scenicData);
+    console.log(this.newData);
+
     this.truncatedText =
       this.newData.description.length > this.maxLength
         ? this.newData.description.slice(0, this.maxLength) + "..."
         : this.newData.description;
     this.commentForm.attractionId = this.reservationForm.attractionId =
       this.newData.attractionId;
-    // 获取参数
     this.getComments();
     this.commentForm.userId = this.reservationForm.userId = Number(
       Cookies.get("userId")
     );
-    console.log(this.reservationForm);
-
     getCommentList(this.page).then((res) => {
       console.log(res);
     });
