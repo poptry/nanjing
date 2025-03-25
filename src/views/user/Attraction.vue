@@ -16,6 +16,10 @@
               <span v-if="!isExpanded && newData.description.length > maxLength"
                 style="color: #37a;text-decoration: underline;cursor: pointer;"
                 @click="toggleExpand">展开</span>
+              <!-- 收起 -->
+              <span v-else-if="isExpanded"
+                style="color: #37a;text-decoration: underline;cursor: pointer;"
+                @click="toggleRetract">收起</span>
             </div>
           </el-descriptions-item>
           <el-descriptions-item label="开放时间">
@@ -141,6 +145,14 @@ export default {
     };
   },
   methods: {
+    // 收起
+    toggleRetract() {
+      this.isExpanded = !this.isExpanded;
+      this.truncatedText =
+        this.newData.description.length > this.maxLength
+          ? this.newData.description.slice(0, this.maxLength) + "..."
+          : this.newData.description;
+    },
     // 展开
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
@@ -184,8 +196,6 @@ export default {
   },
   created() {
     this.newData = JSON.parse(this.$route.params.scenicData);
-    console.log(this.newData);
-
     this.truncatedText =
       this.newData.description.length > this.maxLength
         ? this.newData.description.slice(0, this.maxLength) + "..."

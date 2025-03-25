@@ -39,24 +39,68 @@
     <div class="chooseScenic">
       <el-form label-width="80px">
         <el-form-item label="起点">
-          <el-input v-model="startSpot.name" disabled>
-            <el-button slot="append" icon="el-icon-plus" @click="dialogVisible=true"></el-button>
-          </el-input>
+          <div class="flexBox">
+            <el-input style="width: 80%;" v-model="startSpot.name" disabled>
+              <el-button slot="append" icon="el-icon-plus" @click="openStart"></el-button>
+            </el-input>
+          </div>
         </el-form-item>
         <el-form-item label="途径景点" v-for="(item, index) in attractionList" :key="index">
-          <el-input v-model="item.name" disabled>
-            <el-button slot="append" icon="el-icon-plus" @click="openOther(index)"></el-button>
-          </el-input>
+          <div class="flexBox">
+            <el-input style="width: 80%;" v-model="item.name" disabled>
+              <el-button slot="append" icon="el-icon-plus" @click="openOther(index)"></el-button>
+            </el-input>
+            <el-button v-if="index!=0" style="margin-left: 20px;" type="danger" icon="el-icon-minus"
+              circle @click="remove(index)"></el-button>
+          </div>
         </el-form-item>
         <!-- 按钮，点击添加新的表单项 -->
-        <el-button @click="addNewOption" style="width: 100%;"><i
+        <el-button class="addNewItem" @click="addNewOption" style="width: 100%;"><i
             class="el-icon-plus"></i></el-button>
       </el-form>
-      <el-button @click="getBestPath">获取最佳路径</el-button>
+      <el-button class="getPath" @click="getBestPath" type="primary">获取最佳路径</el-button>
     </div>
-    <el-steps>
-      <el-step v-for="item in result" :key="item.attractionId" :title="item.name"></el-step>
-    </el-steps>
+    <el-timeline>
+      <el-timeline-item v-for="item in result" :key="item.attractionId" timestamp=""
+        placement="top">
+        <el-card class="box-card">
+          <img :src="item.image"
+            style="display: block; object-fit: cover; width: 150px; height: 150px;" alt="未加载" />
+          <div class="description">
+            <el-descriptions title="景点介绍" :column="1">
+              <el-descriptions-item
+                label="名称">{{ item.name ? item.name : "--" }}</el-descriptions-item>
+              <el-descriptions-item
+                label="地址">{{ item.address ? item.address : "--" }}</el-descriptions-item>
+              <el-descriptions-item label="描述">
+                <div style="width: 250px;">
+                  <el-tooltip effect="light" placement="top" :content="item.description"
+                    popper-class="custom-tooltip">
+                    <p class="ellipsis">
+                      {{ item.description ? item.description : "--" }}
+                    </p>
+                  </el-tooltip>
+                </div>
+              </el-descriptions-item>
+              <el-descriptions-item label="开放时间">
+                {{ item.openTime ? item.openTime : '--' }}
+              </el-descriptions-item>
+              <el-descriptions-item label="开放状态">
+                <el-tag size="small"
+                  :type="item.status == 0 ? 'danger' :''">{{ item.status == 0 ? '关闭' : "开启" }}</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item
+                label="票价">{{ item.ticketPrice ? item.ticketPrice : '--'  }}</el-descriptions-item>
+            </el-descriptions>
+          </div>
+          <el-button type="primary" icon="el-icon-s-promotion" circle plain style="height: 60px;">
+            <router-link style="text-decoration: none;"
+              :to="{ name: 'attraction', params: { scenicData: JSON.stringify(item) } }"
+              target="_blank">更多</router-link>
+          </el-button>
+        </el-card>
+      </el-timeline-item>
+    </el-timeline>
   </div>
 </template>
 
@@ -80,7 +124,7 @@ export default {
         },
       ],
       // 选择途经景点的index
-      index: 0,
+      index: -1,
       flag: 0,
       // 起点
       startSpot: {
@@ -95,6 +139,25 @@ export default {
     };
   },
   methods: {
+    // 点击卡片,前往详细页面
+    handleClick(item) {
+      // 跳转到景点详情页面，打开新的标签页
+      // this.$router.push({
+      //   name: "attraction",
+      //   params: { scenicData: JSON.stringify(item) },
+      // });
+    },
+    // 打开起点
+    openStart() {
+      this.flag = 0;
+      this.dialogVisible = true;
+    },
+    // 移除
+    remove(index) {
+      console.log(index);
+      this.attractionList.splice(index, 1);
+      console.log(this.attractionList);
+    },
     // 关闭弹窗
     closeDialog() {
       this.selection = [];
@@ -122,6 +185,7 @@ export default {
         this.flag = 1;
       } else if (this.flag == 1 && this.selection.length > 0) {
         this.attractionList[this.index] = this.selection[0];
+        console.log(this.attractionList);
       }
       this.dialogVisible = false;
     },
@@ -137,8 +201,9 @@ export default {
         attractionList: attractionIdList,
       }).then(({ data }) => {
         if (data.code == 200) {
-          console.log(data.data);
           this.result = data.data;
+        } else if (data.code == 400) {
+          this.$message.error(data.msg);
         }
       });
     },
@@ -170,6 +235,21 @@ export default {
 </script>
 
 <style scoped lang="less">
+.box-card {
+  width: 50%;
+  ::v-deep .el-card__body {
+    display: flex;
+    flex-direction: row;
+  }
+  .description {
+    margin-left: 20px;
+  }
+}
+.flexBox {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
 .best-path {
   width: 100%;
   height: 100%;
@@ -179,8 +259,23 @@ export default {
     justify-content: space-between;
   }
   .chooseScenic {
-    width: 500px;
-    margin-top: 40px;
+    margin: 20px;
+    width: 600px;
+    padding: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    .addNewItem {
+      margin-bottom: 20px;
+      border: 0;
+      padding: 10px 20px;
+      i {
+        font-size: 24px;
+      }
+    }
+    .getPath {
+      display: block;
+      width: 200px;
+      margin: 0 auto;
+    }
   }
   /* 设置文字省略 */
   .ellipsis {
