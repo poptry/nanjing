@@ -7,11 +7,24 @@
           <h3>南京旅游服务平台</h3>
         </div>
         <div class="r-content">
-          <el-tooltip class="item" effect="light" content="预约信息" placement="left-start">
+          <!-- <el-tooltip class="item" effect="light" content="预约信息" placement="left-start">
+          </el-tooltip> -->
+          <div class="topbutton" style="display: flex;align-items: center;" @click="toReservation">
             <span class="reservation"
-              style="display: inline-block; color: white;font-size: 24px;margin-right: 20px;"
-              @click="toReservation"><i class="el-icon-star-off"></i></span>
-          </el-tooltip>
+              style="display: inline-block; color: white;font-size: 24px;margin-right: 5px;"><i
+                class="el-icon-star-off"></i></span>
+            <span style="display: inline-block; color: white;
+              font-weight: 600;
+              font-size: 16px;">预约信息</span>
+          </div>
+          <div @click="toBestPath" class="topbutton"
+            style="display: flex;align-items: center;margin-right: 20px;">
+            <span style="display: inline-block; color: white;font-size: 24px;margin-right: 5px;">
+              <i class="el-icon-guide"></i></span>
+            <span style="display: inline-block; color: white;
+              font-weight: 600;
+              font-size: 16px;">路线规划</span>
+          </div>
           <el-dropdown @command="handleClick">
             <span class="el-dropdown-link">
               <img src="@/assets/images/hd-pf.jpg" alt="" class="user">
@@ -34,13 +47,17 @@
 import Cookie from "js-cookie";
 export default {
   name: "UserMain",
-  components: {},
   data() {
-    return {};
+    return {
+      dialogVisible: true,
+    };
   },
   methods: {
     toHome() {
       this.$router.push("/userHome");
+    },
+    toBestPath() {
+      this.$router.push("/bestPath");
     },
     //退出业务
     handleClick(command) {
@@ -61,6 +78,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.topbutton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 10px;
+  &:hover {
+    box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.2);
+    background-color: #c9c9c965;
+  }
+}
 .user-home {
   height: 100%;
 }

@@ -12,7 +12,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="用户" prop="userName">
-              <el-input disabled v-model="form.userId"></el-input>
+              <el-input disabled v-model="form.userName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -87,9 +87,6 @@
 
         <!-- 留言内容 -->
         <el-table-column prop="content" label="留言内容" width="250">
-          <!-- <template slot-scope="scope">
-            <div class="ellipsis" :title="scope.row.content">{{ scope.row.content }}</div>
-          </template> -->
           <template slot-scope="scope">
             <el-tooltip effect="light" placement="top" :content="scope.row.content"
               popper-class="custom-tooltip">
@@ -146,7 +143,7 @@ export default {
         userName: "",
         attractionId: "",
         content: "",
-        rating: "",
+        rating: 0,
         status: "",
         attractionName: "",
       },
@@ -244,8 +241,11 @@ export default {
     getList() {
       getCommentList({ ...this.page }).then(({ data }) => {
         if (data.code == 200) {
-          this.tableData = data.data.records;
-          console.log(JSON.stringify(this.tableData));
+          let array = data.data.records;
+          array.forEach((element) => {
+            element.rating = Number(element.rating);
+          });
+          this.tableData = array;
           this.total = data.data.total;
         } else {
           this.$message.error(data.msg);

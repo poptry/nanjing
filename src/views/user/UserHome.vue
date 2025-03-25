@@ -2,8 +2,13 @@
   <div class="user-home">
     <!-- 搜索 -->
     <div class="search">
-      <input class="searchInput" name="text" type="text" placeholder="Search the internet...">
+      <div class="searchPart">
+        <input class="searchInput" v-model="searchValue" name="text" type="text"
+          placeholder="输入景点名称搜索" />
+        <el-button @click="search">搜索</el-button>
+      </div>
     </div>
+    <!-- 景点分类和展示 -->
     <div class="w recommendScenic">
       <!-- 分类 -->
       <div style="margin-bottom: 20px;">
@@ -39,7 +44,7 @@ import CommonCard from "@/components/CommonCard";
 import CommonHeader from "../../components/CommonHeader.vue";
 import CategoryCard from "@/components/CategoryCard.vue";
 import ScenicDialog from "@/components/ScenicDialog.vue";
-import { getCategoryList, getAttractionList } from "@/api";
+import { getCategoryList, searchAttraction, getAttractionList } from "@/api";
 export default {
   name: "UserHome",
   components: {
@@ -50,6 +55,7 @@ export default {
   },
   data() {
     return {
+      searchValue: "",
       all: {
         categoryName: `全部`,
       },
@@ -65,6 +71,14 @@ export default {
     };
   },
   methods: {
+    // 搜索
+    search() {
+      console.log(this.searchValue);
+      searchAttraction({ name: this.searchValue }).then(({ data }) => {
+        this.scenicList = data.data;
+        this.total = data.total;
+      });
+    },
     // 显示个数切换
     handleSizeChange(val) {
       this.page.pageSize = val;
@@ -100,13 +114,14 @@ export default {
         });
         return;
       }
-      await getAttractionList({ categoryId: this.firstId, ...this.page }).then(
-        ({ data }) => {
-          console.log(data.data);
-          this.total = data.total;
-          this.scenicList = data.data;
-        }
-      );
+      await getAttractionList({
+        attractionName: this.searchValue,
+        categoryId: this.firstId,
+        ...this.page,
+      }).then(({ data }) => {
+        this.total = data.total;
+        this.scenicList = data.data;
+      });
     },
   },
   async mounted() {
@@ -170,13 +185,19 @@ export default {
     height: 300px;
     padding: 20px;
     background: url("@/assets/images/bgImg.jpg") no-repeat center/cover;
-    .searchInput {
+    .searchPart {
       position: absolute;
+      width: 60%;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .searchInput {
+      width: 90%;
       display: block;
-      width: 60%;
       height: 60px;
       border: 1.5px solid lightgrey;
       outline: none;

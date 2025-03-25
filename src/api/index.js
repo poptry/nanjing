@@ -16,6 +16,11 @@ export const uploadImg = (data) => {
   });
 };
 
+// 最佳路径goodPath
+export const getGoodPath = (data) => {
+  return http.post("/path/goodPath", data);
+};
+
 // 管理员首页计数接口
 // 用户
 export const getUserCount = () => {
@@ -102,6 +107,10 @@ export const removeAttraction = (data) => {
 // 修改景区
 export const updateAttraction = (data) => {
   return http.post("/attraction/update", data);
+};
+// 搜索 search
+export const searchAttraction = (data) => {
+  return http.post("/attraction/search", data);
 };
 
 // 预定信息

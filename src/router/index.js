@@ -82,6 +82,12 @@ const routes = [
         component: () => import("@/views/user/UserReservation.vue"),
       },
       {
+        path: "/bestPath",
+        name: "bestPath",
+        meta: { requiresAuth: true, role: "user" },
+        component: () => import("@/views/user/BestPath.vue"),
+      },
+      {
         path: "/attraction:scenicData",
         name: "attraction",
         meta: { requiresAuth: true, role: "user" },

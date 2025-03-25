@@ -2,7 +2,8 @@
   <div class="scenicDialog">
     <div class="top-part">
       <div class="img">
-        <el-image style="width: 200px; height: 200px" :src="newData.image" fit="fill"></el-image>
+        <img :src="newData.image" style=" object-fit: cover; width: 200px; height: 250px;"
+          alt="未加载" />
       </div>
       <div class="description">
         <el-descriptions title="景点介绍" :column="1">
@@ -11,7 +12,11 @@
           <el-descriptions-item
             label="地址">{{ newData.address ? newData.address : "--" }}</el-descriptions-item>
           <el-descriptions-item label="描述">
-            <p class="ellipsis">{{ newData.description ? newData.description : "--" }}</p>
+            <div style="width: 250px;">{{ truncatedText}}
+              <span v-if="!isExpanded && newData.description.length > maxLength"
+                style="color: #37a;text-decoration: underline;cursor: pointer;"
+                @click="toggleExpand">展开</span>
+            </div>
           </el-descriptions-item>
           <el-descriptions-item label="开放状态">
             <el-tag size="small"
@@ -93,6 +98,8 @@ export default {
     return {
       message: "",
       newData: [],
+      maxLength: 100, //截取文字长度
+      isExpanded: false, //是否展开
       rules: {
         visitDate: [
           { required: true, message: "请选择预定日期", trigger: "change" },
@@ -127,9 +134,15 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
+      truncatedText: "",
     };
   },
   methods: {
+    // 展开
+    toggleExpand() {
+      this.isExpanded = !this.isExpanded;
+      this.truncatedText = this.newData.description;
+    },
     // 预定
     submitReservation() {
       this.$refs.form.validate((valid) => {
@@ -168,6 +181,10 @@ export default {
   },
   created() {
     this.newData = JSON.parse(this.$route.params.scenicData);
+    this.truncatedText =
+      this.newData.description.length > this.maxLength
+        ? this.newData.description.slice(0, this.maxLength) + "..."
+        : this.newData.description;
     this.commentForm.attractionId = this.reservationForm.attractionId =
       this.newData.attractionId;
     // 获取参数
@@ -194,7 +211,7 @@ export default {
   display: flex;
   flex-direction: row;
   .img {
-    padding: 5px;
+    height: 250px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
       rgba(57, 56, 56, 0.3) 0px 7px 13px -3px;
   }

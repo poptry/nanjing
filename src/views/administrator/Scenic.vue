@@ -7,12 +7,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="景点名称" prop="name">
-              <el-input placeholder="请输入景点名称" v-model="form.name" maxlength="50"></el-input>
+              <el-input placeholder="请输入景点名称" v-model="form.name" maxlength="30"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="地址" prop="address">
-              <el-input placeholder="请输入地址" v-model="form.address"></el-input>
+              <el-input placeholder="请输入地址" maxlength="50" v-model="form.address"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -20,7 +20,8 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="描述" prop="description">
-              <el-input type="textarea" placeholder="请输入景点描述" v-model="form.description"></el-input>
+              <el-input type="textarea" show-word-limit maxlength="200" placeholder="请输入景点描述"
+                v-model="form.description"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
