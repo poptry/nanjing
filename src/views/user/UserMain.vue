@@ -1,5 +1,6 @@
 <template>
   <div class="user-home">
+
     <!-- 顶部栏 -->
     <el-header>
       <div class="header-container">
@@ -17,20 +18,26 @@
               font-weight: 600;
               font-size: 16px;">预约信息</span>
           </div>
-          <div @click="toBestPath" class="topbutton"
-            style="display: flex;align-items: center;margin-right: 20px;">
+          <div @click="toBestPath" class="topbutton" style="display: flex;align-items: center;">
             <span style="display: inline-block; color: white;font-size: 24px;margin-right: 5px;">
               <i class="el-icon-guide"></i></span>
             <span style="display: inline-block; color: white;
               font-weight: 600;
               font-size: 16px;">路线规划</span>
           </div>
+          <div @click="toPersonalCenter" class="topbutton"
+            style="display: flex;align-items: center;margin-right: 20px;">
+            <span style="display: inline-block; color: white;font-size: 24px;margin-right: 5px;">
+              <i class="el-icon-user"></i></span>
+            <span style="display: inline-block; color: white;
+              font-weight: 600;
+              font-size: 16px;">个人中心</span>
+          </div>
           <el-dropdown @command="handleClick">
             <span class="el-dropdown-link">
               <img src="@/assets/images/hd-pf.jpg" alt="" class="user">
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="personal">个人中心</el-dropdown-item>
               <el-dropdown-item command="cancle">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -38,12 +45,17 @@
       </div>
     </el-header>
     <div class="routerContainer">
+      <div v-if="$route.name=='personalInfo'" class="return">
+        <router-link to="/userHome" class="backLink">返回</router-link>
+        <el-divider></el-divider>
+      </div>
       <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
+import router from "@/router";
 import Cookie from "js-cookie";
 export default {
   name: "UserMain",
@@ -59,6 +71,9 @@ export default {
     toBestPath() {
       this.$router.push("/bestPath");
     },
+    toPersonalCenter() {
+      this.$router.push("/personalInfo");
+    },
     //退出业务
     handleClick(command) {
       if (command === "cancle") {
@@ -66,8 +81,6 @@ export default {
         Cookie.remove("token");
         //跳转到登录页面
         this.$router.push("/login");
-      } else if (command == "personal") {
-        this.$router.push("/personalInfo");
       }
     },
     toReservation() {
@@ -78,6 +91,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.return {
+  padding: 20px 40px 0 40px;
+  .backLink {
+    text-decoration: none;
+    color: black;
+  }
+}
 .topbutton {
   cursor: pointer;
   display: flex;

@@ -1,6 +1,6 @@
 <template>
   <div class="manage">
-    <el-dialog title="景点信息" :visible.sync="dialogVisible" width="50%" @closed="handleClose">
+    <el-dialog title="景点信息" :visible.sync="dialogVisible" width="53%" @closed="handleClose">
       <!-- 放表单信息 -->
       <el-form label-position="left" ref="form" :model="form" label-width="80px" :inline="true"
         :rules="rules">
@@ -100,7 +100,7 @@
       <!-- 搜索区域 -->
       <el-form :model="Attractionform" :inline="true" size="small">
         <el-form-item>
-          <el-input placeholder="请输入景点名称" v-model="Attractionform.username"></el-input>
+          <el-input placeholder="请输入景点名称" v-model="Attractionform.name"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary" size="small">查询</el-button>
@@ -190,7 +190,8 @@
         </el-table-column>
       </el-table>
       <div class="pager">
-        <el-pagination layout="prev, pager, next" :total="total" @current-change="handlePage">
+        <el-pagination layout="prev, pager, next" :total="total" :current-page.sync="currentPage"
+          @current-change="handlePage">
         </el-pagination>
       </div>
     </div>
@@ -204,6 +205,7 @@ import {
   deleteAttraction,
   updateAttraction,
   removeAttraction,
+  getAttractionListByName,
 } from "@/api";
 export default {
   data() {
@@ -211,6 +213,9 @@ export default {
       dialogVisible: false,
       categorySelect: "",
       uploadvisible: false,
+      isSearch: false,
+      searchName: "",
+      currentPage: 1,
       form: {
         attractionId: "",
         name: "",
@@ -303,6 +308,8 @@ export default {
     },
     //分类选项更换
     changeSelect() {
+      this.currentPage = 1;
+      this.page.pageNum = 1;
       this.getList();
     },
     //获取列表数据方法的封装
@@ -393,10 +400,37 @@ export default {
     //页面切换
     handlePage(val) {
       this.page.pageNum = val;
-      this.getList();
+      // 如果是搜索状态，则调用搜索接口
+      // 否则调用列表接口
+      if (this.isSearch) {
+        this.getListByName();
+      } else {
+        this.getList();
+      }
+    },
+    getListByName() {
+      getAttractionListByName({ name: this.searchName, ...this.page }).then(
+        ({ data }) => {
+          if (data.code == 200) {
+            this.tableData = data.data;
+            this.total = data.total;
+          } else {
+            this.$message.error(data.msg);
+          }
+        }
+      );
     },
     //列表搜索
-    onSubmit() {},
+    onSubmit() {
+      // 先重置页码
+      this.page.pageNum = 1;
+      this.currentPage = 1;
+      this.searchName = this.Attractionform.name;
+      // 进入搜索状态
+      this.isSearch = true;
+      // 调用搜索接口
+      this.getListByName();
+    },
   },
   //获取列表数据
   mounted() {

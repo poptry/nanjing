@@ -120,7 +120,7 @@
       </el-table>
 
       <div class="pager">
-        <el-pagination layout="prev, pager, next" :total="total"
+        <el-pagination layout="prev, pager, next" :total="total" :current-page.sync="currentPage"
           @current-change="handlePage"></el-pagination>
       </div>
     </div>
@@ -133,11 +133,15 @@ import {
   addComment,
   deleteComment,
   updateComment,
+  getCommentListByContent,
 } from "@/api"; // 导入API请求
 export default {
   data() {
     return {
       dialogVisible: false,
+      isSearch: false,
+      searchContent: "",
+      currentPage: 1,
       form: {
         commentId: "",
         userName: "",
@@ -233,12 +237,42 @@ export default {
     },
     handlePage(val) {
       this.page.pageNum = val;
-      this.getList();
+      if (this.isSearch) {
+        this.getListByContent();
+      } else {
+        this.getList();
+      }
+    },
+    getListByContent() {
+      getCommentListByContent({
+        content: this.searchContent,
+        ...this.page,
+      }).then(({ data }) => {
+        console.log(data);
+        if (data.code == 200) {
+          let array = data.data.records;
+          array.forEach((element) => {
+            element.rating = Number(element.rating);
+          });
+          this.tableData = array;
+          this.total = data.data.total;
+        } else {
+          this.$message.error(data.msg);
+        }
+      });
     },
     onSubmit() {
-      this.getList();
+      // 先重置页码
+      this.page.pageNum = 1;
+      this.currentPage = 1;
+      this.searchContent = this.Commentform.commentId;
+      // 进入搜索状态
+      this.isSearch = true;
+      // 调用搜索接口
+      this.getListByContent();
     },
     getList() {
+      console.log("列表");
       getCommentList({ ...this.page }).then(({ data }) => {
         if (data.code == 200) {
           let array = data.data.records;

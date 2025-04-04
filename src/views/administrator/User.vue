@@ -95,7 +95,12 @@
 </template>
 
 <script>
-import { getUserList, deleteUser, updateUser } from "@/api";
+import {
+  getUserList,
+  deleteUser,
+  updateUser,
+  getUserListBySearch,
+} from "@/api";
 export default {
   data() {
     return {
@@ -210,7 +215,21 @@ export default {
       });
     },
     onSubmit() {
-      this.getList();
+      var date = null;
+      if (this.userForm.username != "") {
+        date = {
+          username: this.userForm.username,
+        };
+      }
+
+      getUserListBySearch({ ...date }).then(({ data }) => {
+        if (data.code == 200) {
+          this.tableData = data.data;
+          this.total = data.total;
+        } else {
+          this.$message.error(data.msg);
+        }
+      });
     },
     handlePage(val) {
       this.page.pageNum = val;

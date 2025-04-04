@@ -1,5 +1,9 @@
 <template>
   <div class="best-path">
+    <div class="return">
+      <router-link to="/userHome" class="backLink">返回</router-link>
+      <el-divider></el-divider>
+    </div>
     <el-dialog :visible.sync="dialogVisible" width="60%" title="景点选择" @close="closeDialog">
       <el-table ref="ScenicTable" height="500" :data="tableData" style="width: 100%;"
         @selection-change="handleSelectionChange">
@@ -235,6 +239,12 @@ export default {
 </script>
 
 <style scoped lang="less">
+.return {
+  .backLink {
+    text-decoration: none;
+    color: black;
+  }
+}
 .box-card {
   width: 50%;
   ::v-deep .el-card__body {
@@ -253,13 +263,15 @@ export default {
 .best-path {
   width: 100%;
   height: 100%;
+  padding: 40px;
+
   .pager {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
   }
   .chooseScenic {
-    margin: 20px;
+    margin: 0 auto;
     width: 600px;
     padding: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

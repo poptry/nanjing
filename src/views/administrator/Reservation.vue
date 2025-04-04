@@ -67,6 +67,8 @@
         <!-- 用户ID -->
         <el-table-column prop="userId" label="用户ID" width="100"></el-table-column>
 
+        <el-table-column prop="username" label="用户名字" width="100"></el-table-column>
+
         <!-- 景点ID -->
         <el-table-column prop="attractionName" label="景点"></el-table-column>
 
@@ -93,7 +95,7 @@
         </el-table-column>
       </el-table>
       <div class="pager">
-        <el-pagination layout="prev, pager, next" :total="total"
+        <el-pagination layout="prev, pager, next" :total="total" :current-page.sync="currentPage"
           @current-change="handlePage"></el-pagination>
       </div>
     </div>
@@ -105,11 +107,15 @@ import {
   getReservationList,
   deleteReservation,
   updateReservation,
+  getReservationListByName,
 } from "@/api"; // 导入API请求
 export default {
   data() {
     return {
       dialogVisible: false,
+      isSearch: false,
+      searchName: "",
+      currentPage: 1,
       form: {
         userId: "",
         attractionId: "",
@@ -202,14 +208,40 @@ export default {
     },
     handlePage(val) {
       this.page.pageNum = val;
-      this.getList();
+      // 如果是搜索状态，则调用搜索接口
+      // 否则调用列表接口
+      if (this.isSearch) {
+        this.getListByName();
+      } else {
+        this.getList();
+      }
+    },
+    // 搜索框查询接口
+    getListByName() {
+      getReservationListByName({
+        name: this.searchName,
+        ...this.page,
+      }).then(({ data }) => {
+        if (data.code == 200) {
+          this.tableData = data.data;
+          this.total = data.total;
+        } else {
+          this.$message.error(data.msg);
+        }
+      });
     },
     onSubmit() {
-      this.getList();
+      // 先重置页码
+      this.page.pageNum = 1;
+      this.currentPage = 1;
+      this.searchName = this.Reservationform.reservationId;
+      // 进入搜索状态
+      this.isSearch = true;
+      // 调用搜索接口
+      this.getListByName();
     },
     getList() {
       getReservationList({ ...this.page }).then(({ data }) => {
-        console.log(data.data);
         if (data.code == 200) {
           this.tableData = data.data;
           this.total = data.total;

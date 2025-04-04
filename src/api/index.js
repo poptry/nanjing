@@ -46,6 +46,7 @@ export const getGraphInfo = () => {
 export const getCommentGraphInfo = () => {
   return http.post("/comment/commentGraphInfo");
 };
+
 //用户
 // 获取用户列表
 export const getUserList = (data) => {
@@ -163,4 +164,26 @@ export const updateComment = (data) => {
 // listByAttractionId
 export const getCommentsByAttraction = (data) => {
   return http.post("/comment/listByAttractionId", data);
+};
+
+//查询
+// 获取用户列表
+export const getUserListBySearch = (data) => {
+  return http.post("/user/list", data);
+};
+
+export const getCategoryByName = (data) => {
+  return http.post("/category/list", data);
+};
+
+export const getAttractionListByName = (data) => {
+  return http.post("/attraction/list", data);
+};
+
+export const getReservationListByName = (data) => {
+  return http.post("/reservation/listByUserName", data);
+};
+
+export const getCommentListByContent = (data) => {
+  return http.post("/comment/listByName", data);
 };

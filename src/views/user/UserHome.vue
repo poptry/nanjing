@@ -71,10 +71,23 @@ export default {
     };
   },
   methods: {
-    // 搜索
-    search() {
-      console.log(this.searchValue);
-      searchAttraction({ name: this.searchValue }).then(({ data }) => {
+    // 搜索按钮的事件
+    async search() {
+      // 如果是全部的话，直接根据搜索框进行查询
+      if (this.firstId == 0) {
+        await searchAttraction({
+          name: this.searchValue,
+        }).then(({ data }) => {
+          this.scenicList = data.data;
+          this.total = data.total;
+        });
+        return;
+      }
+      // 如果不是全部的话，携带分类id进行查询
+      await searchAttraction({
+        name: this.searchValue,
+        categoryId: this.firstId,
+      }).then(({ data }) => {
         this.scenicList = data.data;
         this.total = data.total;
       });
@@ -96,7 +109,13 @@ export default {
         pageSize: 10,
       };
       this.firstId = category.categoryId ? category.categoryId : 0;
-      this.getScenicList();
+      if (this.searchValue) {
+        // 点击分类时，如果有搜索值，携带对应的分类id进行搜索
+        this.search();
+      } else {
+        // 否则直接根据分类获取景点列表
+        this.getScenicList();
+      }
     },
     // 点击景点
     clickScenic(scenicData) {

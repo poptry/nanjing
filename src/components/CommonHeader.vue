@@ -89,7 +89,7 @@ export default {
 
       &:last-child {
         .el-breadcrumb__inner {
-          color: #fff;
+          color: #666;
         }
       }
     }

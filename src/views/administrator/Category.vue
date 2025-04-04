@@ -7,7 +7,7 @@
       <!-- 搜索区域 -->
       <el-form :model="categoryForm" :inline="true" size="small">
         <el-form-item>
-          <el-input placeholder="请输入分类名称" v-model="categoryForm.categoryId"></el-input>
+          <el-input placeholder="请输入分类名称" v-model="categoryForm.categoryName"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="onSubmit" type="primary" size="small">查询</el-button>
@@ -29,7 +29,7 @@
       </el-table>
       <div class="pager">
         <el-pagination :page-size="10" :pager-count="7" layout="prev, pager, next" :total="total"
-          @current-change="handlePage">
+          :current-page.sync="currentPage" @current-change="handlePage">
         </el-pagination>
       </div>
     </div>
@@ -54,13 +54,17 @@ import {
   updateCategory,
   deleteCategory,
   getCategoryById,
+  getCategoryByName,
 } from "@/api"; // 引入分类列表数据
 export default {
   data() {
     return {
       dialogVisible: false, // 弹窗显示状态
+      isSearch: false,
+      searchName: "",
+      currentPage: 1,
       categoryForm: {
-        categoryId: "", // 分类id
+        categoryName: "", // 分类id
       }, // 表单数据
       form: {
         categoryName: "",
@@ -104,7 +108,13 @@ export default {
     //页面切换
     handlePage(val) {
       this.page.pageNum = val;
-      this.getCategoryList();
+      // 如果是搜索状态，则调用搜索接口
+      // 否则调用列表接口
+      if (this.isSearch) {
+        this.getListByName();
+      } else {
+        this.getCategoryList();
+      }
     },
     // 提交表单
     submitForm() {
@@ -148,19 +158,26 @@ export default {
         }
       });
     },
-
+    // 搜索分类
+    getListByName() {
+      getCategoryByName({ categoryName: this.searchName, ...this.page }).then(
+        ({ data }) => {
+          if (data.code == 200) {
+            this.$store.commit("setCategoryList", data.data);
+            this.$store.commit("setTotal", data.total);
+          }
+        }
+      );
+    },
     //列表搜索
     onSubmit() {
-      if (this.categoryForm.categoryId == "") {
-        this.getCategoryList();
-        return;
-      }
-      getCategoryById(this.categoryForm).then(({ data }) => {
-        if (data.code == 200) {
-          console.log("okok");
-          this.$store.commit("setCategoryList", [data.data]);
-        }
-      });
+      // 先重置页码
+      this.page.pageNum = 1;
+      this.currentPage = 1;
+      this.searchName = this.categoryForm.categoryName;
+      // 进入搜索状态
+      this.isSearch = true;
+      this.getListByName();
     },
     //获取分类列表
     getCategoryList() {
@@ -168,6 +185,10 @@ export default {
     },
   },
   mounted() {
+    this.getCategoryList();
+  },
+  destroyed() {
+    // 组件销毁时，重新获取分类列表，保持景点列表的分类数据保持最新
     this.getCategoryList();
   },
 };

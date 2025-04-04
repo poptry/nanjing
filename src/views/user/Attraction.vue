@@ -196,6 +196,8 @@ export default {
   },
   created() {
     this.newData = JSON.parse(this.$route.params.scenicData);
+    console.log(this.newData);
+
     this.truncatedText =
       this.newData.description.length > this.maxLength
         ? this.newData.description.slice(0, this.maxLength) + "..."
@@ -206,9 +208,6 @@ export default {
     this.commentForm.userId = this.reservationForm.userId = Number(
       Cookies.get("userId")
     );
-    getCommentList(this.page).then((res) => {
-      console.log(res);
-    });
   },
 };
 </script>

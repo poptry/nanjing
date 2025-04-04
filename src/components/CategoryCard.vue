@@ -22,13 +22,13 @@ export default {
 
 <style lang="less" scoped>
 .card {
-  width: 90%/10;
-  margin: 0 10%/2/10;
+  margin: 10px;
   margin-bottom: 5px;
+  padding: 0 20px;
   height: 40px;
-  line-height: 40px;
+  line-height: 35px;
   text-align: center;
-  border-radius: 20px;
+  border-radius: 15px;
   border: 2px solid rgb(20, 20, 20);
   cursor: pointer;
   transition: all 0.3s;
