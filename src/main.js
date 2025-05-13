@@ -26,6 +26,7 @@ router.beforeEach(async (to, from, next) => {
   const userRole = store.state.user.permission;
   // 首先判断token
   if (!token && to.name !== "login") {
+    console.log("没有token，跳转到登录页");
     // 没有token，且去的不是登录页，跳到登录
     // console.log("么有token进入登录页面");
     next({ name: "login" });
@@ -47,7 +48,7 @@ router.beforeEach(async (to, from, next) => {
       }
     } else {
       //没有角色，去登录
-      // console.log("没有角色信息存储，要登录");
+      console.log("没有角色信息存储，要登录");
       next({ name: "login" });
       return;
     }

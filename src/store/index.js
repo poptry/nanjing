@@ -22,7 +22,8 @@ export default new Vuex.Store({
   },
   plugins: [
     VuexPersistence({
-      storage: window.sessionStorage,
+      // storage: window.sessionStorage,
+      storage: window.localStorage,
       paths: PERSIST_PATH,
     }),
   ],
